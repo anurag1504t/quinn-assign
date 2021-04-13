@@ -11,14 +11,35 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+/* 
+.calender-header {
+  position: absolute;
+  top: 0;
+} */
 
 .tile {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  grid-auto-rows: auto
+  grid-auto-rows: auto;
+}
+
+.day-tile {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-auto-rows: auto;
+  text-align: right;
+
 }
 
 .calender-tile {
   display: inline-block;
   border: solid 1px black;
+}
+
+.day {
+  text-align: right;
+}
+
+.month-header {
+  font-size: 50px;
 }

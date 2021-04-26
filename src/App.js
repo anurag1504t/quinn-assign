@@ -1,12 +1,68 @@
 import { useEffect, useState } from "react";
 import { Card } from "reactstrap";
+const axios = require('axios')
+const reqObject = {
+    "requestobjects": [
+        {
+            "posts": {
+                "operationtype": "read",
+                "id": {
+                    "return": true
+                },
+                "userid": {
+                    "searchvalues": ["41329663-5834-11eb-8e6e-3ca82abc3dd4"],
+                    "return": true
+                },
+                "iscalendarentry": {
+                    "searchvalues": ["true"],
+                    "return": true
+                },
+                "media": {
+                    "return": true
+                },
+                "rating": {
+                    "return": true
+                },
+                "text": {
+                    "return": true
+                },
+                "privacy": {
+                    "searchvalues": [
+                        18
+                    ],
+                    "return": true
+                },
+                "typeofday": {
+                    "return": true
+                },
+
+                "calendardatetime": {
+                    "return": true,
+                    "sort": "descending"
+                },
+                "maxitemcount": "50",
+                "continuationtoken": null
+            }
+        }
+    ]
+}
 
 function App() {
 	const [arr, setArr] = useState([]);
 	const [minDate, setMinDate] = useState();
 	const [maxDate, setMaxDate] = useState();
+	const [event, setEvent] = useState();
 	const monthDays = ["SUN", "MON", "TUE", "WED", "THUR", "FRI", "SAT"];
-	useEffect( () => {
+	useEffect( () => {		
+
+		axios.post('http://devapi.quinn.care/graph', reqObject)
+  		.then((response) => {
+			setEvent(response.data.responseobjects[0].posts);
+			console.log(response.data.responseobjects[0].posts);
+			reqObject.continuationtoken = response.data.responseobjects.continuationtoken;
+  		})
+		.catch( err => console.log(err));
+
 		let today = new Date();
 		let day = today.getDay();
 		console.log(today);
@@ -75,8 +131,8 @@ function App() {
 						monthDays?
 							monthDays.map( (day, index) => {
 								return (
-									<div className="day-tile">
-										<div className="day"><strong>{day}</strong> </div>
+									<div>
+										<div className="day" key={day}><strong>{day}</strong> </div>
 									</div>
 								)
 							})
@@ -104,7 +160,11 @@ const Tile = ({date}) => {
 	return (
 		<Card>
 			<div className='date-tile'>
-				<div>{new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day:'2-digit'}).format(new Date(Date.parse(date)))}</div>
+				{
+					(date.getDate() === 1)?
+					<div>{new Intl.DateTimeFormat('en-US', { month:'short', day:'2-digit'}).format(new Date(Date.parse(date)))}</div>
+					:<div>{new Intl.DateTimeFormat('en-US', { day:'2-digit'}).format(new Date(Date.parse(date)))}</div>
+				}
 			</div>
 		</Card>
 	)
